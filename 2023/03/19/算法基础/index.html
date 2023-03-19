@@ -44,7 +44,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/2023/03/19/%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/01.png">
 <meta property="article:published_time" content="2023-03-19T10:11:04.000Z">
-<meta property="article:modified_time" content="2023-03-19T10:15:28.236Z">
+<meta property="article:modified_time" content="2023-03-19T11:54:02.270Z">
 <meta property="article:author" content="Jason Han">
 <meta property="article:tag" content="算法">
 <meta name="twitter:card" content="summary_large_image">
@@ -172,7 +172,8 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">INSERTION-SORT(A):</span><br><span class="line">	for j = 2 to A.length</span><br><span class="line">		key = A[j]</span><br><span class="line">		//将key插入到已排序列的正确位置</span><br><span class="line">		i = j - 1</span><br><span class="line">		while i &gt; 0 and A[i] &gt; key</span><br><span class="line">			A[i+1] = A[i]</span><br><span class="line">			i = i - 1</span><br><span class="line">		A[i+1] = key</span><br></pre></td></tr></table></figure>
 
 <p>简要分析: 第2行单次需要常数$c_1$的时间，设循环$n$次，则第3、5行单次分别为$c_2,c_3$，循环$n-1$次，这是因为for循环不满足条件后不再进入循环体。第6行单次$c_4$，循环次数为$\sum _{j&#x3D;2}^nt_j$，$t_j$代表第$j$次for循环时，while循环执行的次数，这取决于数据的具体情况。7、8行与3、5行类似，需要减1，第9行和第3、5行的次数相同。</p>
-<p>总次数$T(n)&#x3D;c_1n+c_2(n-1)+c_3(n-1)+c_4\sum_{j&#x3D;2}^nt_j+\ c_5\sum_{j&#x3D;2}^n(t_j-1)+c_6\sum_{j&#x3D;2}^n(t_j-1)+c_7(n-1)$</p>
+<p>总次数</p>
+<p>$$T(n)&#x3D;c_1n+c_2(n-1)+c_3(n-1)+c_4\sum_{j&#x3D;2}^nt_j+\\ c_5\sum_{j&#x3D;2}^n(t_j-1)+c_6\sum_{j&#x3D;2}^n(t_j-1)+c_7(n-1)$$</p>
 <p>当每一次新插入的元素比有序序列的最后一个元素还大，也就是排序前整个待排序列就已经是从小到大的有序序列时，相当于每次的新扑克牌直接放在最后的位置，此时$t_j&#x3D;1$，while循环只进行1次，$T(n)&#x3D;c_1n+c_2(n-1)+c_3(n-1)+c_4(n-1)+c_7(n-1)$，因此是线性函数。而当完全倒序的时候，$t_j&#x3D;j$，此时新扑克牌要一直向前比较到第一张，因此求和式是等差数列的和，是二次的。平均情况下，每次新的扑克牌要放到排好的扑克牌中间，$t_j\approx\frac{j}{2}$，此时仍然是等差数列求和是二次的。</p>
 <p>二.归并排序</p>
 <p>​	将n个元素的数组排列好需要先将左半部分和右半部分分别排好，然后在两组排好的序列中分别添加游标，将左游标和右游标比较，将较小的那个存入最终序列，然后移动该游标继续与另一个游标的值比较。对于左半部分和右半部分也需要递归地用这种方法排好。</p>
@@ -180,7 +181,7 @@
 
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">MERGE-SORT(A, p, r):</span><br><span class="line">	if p &lt; r</span><br><span class="line">		q = (p + r) / 2</span><br><span class="line">		MERGE-SORT(A, p, q)	//排左半部分</span><br><span class="line">		MERGE-SORT(A, q+1, r)	//排右半部分</span><br><span class="line">		MERGE(A, p, q, r)	//将左半部分和右半部分合并</span><br></pre></td></tr></table></figure>
 
-<p>简要分析: 设总时间为$T(n)$，则总时间包括排左半部分和右半部分的时间和加上合并的时间(单层循环是线性时间)，因此可以得到<br>$$<br>T(n)&#x3D;\begin{cases}<br>c,n&#x3D;1 \<br>2T(n&#x2F;2)+cn,n&gt;1\<br>\end{cases}<br>$$<br><img src="01.png" alt="图解"></p>
+<p>简要分析: 设总时间为$T(n)$，则总时间包括排左半部分和右半部分的时间和加上合并的时间(单层循环是线性时间)，因此可以得到<br>$$<br>T(n)&#x3D;\begin{cases}<br>c,n&#x3D;1 \\<br>2T(n&#x2F;2)+cn,n&gt;1<br>\end{cases}<br>$$<br><img src="01.png" alt="图解"></p>
 <p>总代价是线性函数乘对数函数。</p>
 
     </div>
