@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2023-03-19T11:54:02.270Z</updated>
+  <updated>2023-03-19T12:05:41.280Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,112 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>排序和顺序统计量</title>
+    <link href="http://example.com/2023/03/19/%E6%8E%92%E5%BA%8F%E5%92%8C%E9%A1%BA%E5%BA%8F%E7%BB%9F%E8%AE%A1%E9%87%8F/"/>
+    <id>http://example.com/2023/03/19/%E6%8E%92%E5%BA%8F%E5%92%8C%E9%A1%BA%E5%BA%8F%E7%BB%9F%E8%AE%A1%E9%87%8F/</id>
+    <published>2023-03-19T12:01:32.000Z</published>
+    <updated>2023-03-19T12:05:41.280Z</updated>
+    
+    <content type="html"><![CDATA[<h5 id="排序和顺序统计量"><a href="#排序和顺序统计量" class="headerlink" title="排序和顺序统计量"></a>排序和顺序统计量</h5><p><strong>排序算法</strong> 插入排序最坏情况下可以在$\Theta(n^2)$时间内将$n$个数排好序。但是由于其内层循环非常紧凑，对于小规模输入，插入排序是一种非常快的原址排序算法(输入数组中仅有常数个元素需要在排序过程中储存在数组之外)。归并排序有更好的渐进运行时间，但归并过程不是原址的。</p><p><strong>顺序统计量</strong> 一个$n$个数的集合的第$i$个顺序统计量就是集合中第$i$小的数。</p><h5 id="堆排序"><a href="#堆排序" class="headerlink" title="堆排序"></a>堆排序</h5><p>堆排序与归并排序一样，但不同于插入排序，堆排序的时间复杂度为$O(n\mathrm{lg}n)$；与插入排序相同，但不同于归并排序的事，堆排序同样具有空间原址性：任何时候都只需要常数个额外的元素空间储存临时数据。</p><p>堆排序引入“堆”这个数据结构来管理信息，堆不仅用于堆排序，也可以构造一种有效的优先队列。</p><p><strong>堆</strong></p><p>二叉堆是一个数组，可以被看成近似的完全二叉树。除最底层外完全充满，而且是从左向右填充。表示堆的数组A有两个属性：A.length表示元素个数，A.heap-size表示有多少堆元素，表示的是堆有多少个有效元素，因此A.length&gt;&#x3D;A.heap-size.这里设根节点为A[1]</p><p>将数组在逻辑上排列成如图所示</p><p><img src="04.png"></p><p>则我们可以观察出对于给定的下标$i$，我们如何访问父节点(除以2取整)和左右子节点(分别为$2i$和$2i+1$)。大多数计算机可以通过左移或右移在一条指令时间内计算出父节点和左子节点。堆排序好的实现中，这三个访问函数通常作为宏或内联函数。</p><p>二叉堆分为最大堆和最小堆，上图就是一个最大堆，它需要满足任何一个节点的值一定小于等于其父节点，因此根节点一定是最大的。最小堆则相反，根节点一定是最小的，且对每一节点都满足节点值大于等于父节点值。</p><p>把堆看成一棵树，定义堆中节点的高度就是该节点到叶子节点最长简单路径上边的数目，进而用根节点的高度来定义堆的高度，因此堆的高度是$\Theta(\mathrm{lg}n)$。</p><p>下面分成几部分拆解堆排序的过程</p><p><strong>维护堆的性质</strong></p><p>想象这样一种情况，根节点的左右子树都是最大堆，但根节点本身可能小于左子节点或右子节点，因此对整个堆而言违背了最大堆的性质，我们采用让根节点逐级下降的方式调整堆，使它找到自己合适的位置。A为整个数组，i为需要调整的位置，LEFT，RIGHT，PARENT分别代表获取左子节点，右子节点和父节点的位置。</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">MAX-HEAPIFY(A, i)</span><br><span class="line">l = LEFT(i)//左子节点下标</span><br><span class="line">r = RIGHT(i)//右子节点下标</span><br><span class="line">if l &lt;= A.heap-size and A[l] &gt; A[i]</span><br><span class="line">largest = l</span><br><span class="line">else largest = i</span><br><span class="line">if r &lt;= A.heap-size and A[r] &gt; A[largest]</span><br><span class="line">largest = r//以上代码找到了i，i左子节点，i右子节点三者最大值的位置</span><br><span class="line">if largest != i</span><br><span class="line">exchange A[i] with A[largest]//至此保证了i下面一层符合最大堆</span><br><span class="line">MAX-HEAPIFY(A, largest)//如果i的元素被换到了下一层去，仍然有可能比再下一层的子节点小，因此需要递归检查</span><br></pre></td></tr></table></figure><p>过程如图所示</p><p><img src="01.png"></p><p>分析上式时间代价：调整根、左、右三个元素的关系的时间代价$\Theta(1)$，加上在一棵以$i$的一个孩子为根节点的子树上递归的时间代价，每个孩子的子树大小至多为$2n&#x2F;3$，在树的最底层恰好半满时，设左半部分满，则左子树占整个树的部分最大。设总共$k$层，则根节点左子树有$2^{k-1}-1$个节点，底层半满情况下，整个树共有$2^{k-1}-1+\frac{1}{2}\cdot2^{k-1}&#x3D;\frac{3}{2}\cdot2^{k-1}-1$个节点（除最后一层外都是规律的，最后一层要除以2），显然，比值具有上界$2&#x2F;3$。</p><p>因此有$T(n)\le T(2n&#x2F;3)+\Theta(1)$</p><p>根据主定理，解为$T(n)&#x3D;O(\mathrm{lg}n)$。因此若树高为$h$，该算法时间复杂度就为$O(h)$，因为高度和总节点数存在对数关系。</p><p><strong>建堆</strong></p><p>采用自底向上的方法将某乱序数组转化为最大堆。每个叶子节点看成是只包含一个元素的堆，因此只需从倒数第二层的最右侧开始，从右向左、从下向上建堆，这样可以确保实际最大的元素慢慢浮到最顶端的根节点。</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">BUILD-MAX-HEAP(A)</span><br><span class="line">A.heap-size = A.length</span><br><span class="line">for i = [A.length/2] downto 1</span><br><span class="line">MAX-HEAPIFY(A, i)</span><br></pre></td></tr></table></figure><p>估算一下时间上界，for循环是$O(n)$，每次维护堆是$O(\mathrm{lg}n)$，因此共计$O(n\mathrm{lg}n)$。实际上可以更精确的估计一下：包含$n$个元素的堆的高度为$[lgn]$(设有k层，则总节点数的范围是$2^{k-1}\le n\le 2^{k}-1$，因此$\mathrm{lg}n&lt;\mathrm{lg}(n+1)\le k\le \mathrm{lg}n+1$)，对于任意一个包含$n$个元素的堆中，至多有$\lceil n&#x2F;2^{k+1}\rceil$个高度为h的节点，因此总代价为</p><p><img src="02.png"></p><p><strong>堆排序算法</strong></p><p>首先把某数组建成最大堆，虽然并不是完全有序，但我们可以保证最大元素一定是根节点，我们将这个最大节点与最右侧的叶子节点(最后一个节点)互换，最大元素就到了正确的位置，这个时候我们再对除了末尾的那个最大元素以外剩下的元素重新维护最大堆，只不过这时候堆就比原来少了一个固定好位置的那个元素了，不断重复这个过程，从大到小的元素逐渐放到正确的位置，堆也逐渐变小，直到剩下2个，至此已经完全排好顺序。</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">HEAPSORT(A)</span><br><span class="line">BUILD-MAX-HEAP(A)//建堆</span><br><span class="line">for i = A.length downto 2</span><br><span class="line">exchange A[1] with A[i]//把根(最大值)替到堆的末尾</span><br><span class="line">A.heap-size = A.heap-size - 1//缩减堆，处理剩下的数据</span><br><span class="line">MAX-HEAPIFY(A, 1)//由于非常小的值被换到了根的位置，需要进行一次维护堆</span><br></pre></td></tr></table></figure><p><img src="03.png"></p><p>灰色代表固定好位置后，不再参与后续的排序。</p><p><strong>优先队列</strong> 优先队列的每个元素都有一个关键字用来排序，一个优先队列中应当有以下几个操作：插入，返回最大元素，去掉最大元素，增加某元素的关键字值</p><p>最大优先队列的应用：共享计算机系统的作业调度，一个作业完成后，选出最大元素代表的作业(最高优先级)执行，通过插入某元素到正确的位置可以把一个新作业加入到队列中。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h5 id=&quot;排序和顺序统计量&quot;&gt;&lt;a href=&quot;#排序和顺序统计量&quot; class=&quot;headerlink&quot; title=&quot;排序和顺序统计量&quot;&gt;&lt;/a&gt;排序和顺序统计量&lt;/h5&gt;&lt;p&gt;&lt;strong&gt;排序算法&lt;/strong&gt; 插入排序最坏情况下可以在$\Theta(n^2)</summary>
+      
+    
+    
+    
+    <category term="CS" scheme="http://example.com/categories/CS/"/>
+    
+    <category term="算法导论" scheme="http://example.com/categories/CS/%E7%AE%97%E6%B3%95%E5%AF%BC%E8%AE%BA/"/>
+    
+    
+    <category term="算法" scheme="http://example.com/tags/%E7%AE%97%E6%B3%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>概率分析和随机算法</title>
+    <link href="http://example.com/2023/03/19/%E6%A6%82%E7%8E%87%E5%88%86%E6%9E%90%E5%92%8C%E9%9A%8F%E6%9C%BA%E7%AE%97%E6%B3%95/"/>
+    <id>http://example.com/2023/03/19/%E6%A6%82%E7%8E%87%E5%88%86%E6%9E%90%E5%92%8C%E9%9A%8F%E6%9C%BA%E7%AE%97%E6%B3%95/</id>
+    <published>2023-03-19T11:59:45.000Z</published>
+    <updated>2023-03-19T12:06:18.233Z</updated>
+    
+    <content type="html"><![CDATA[<h5 id="概率分析和随机算法"><a href="#概率分析和随机算法" class="headerlink" title="概率分析和随机算法"></a>概率分析和随机算法</h5><p>1.雇佣问题</p><p>​雇佣代理向你推荐合适的候选人，每次推荐需要一笔代理费用。如果新候选人比在岗的候选人好，则决定聘用，这就需要向雇佣代理付一大笔中介费用。在这个过程中，只考虑向雇佣代理支付的费用，且每次遇到更好的候选人都辞去当前的在岗的候选人。</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">HIRE-ASSISTANT(n)</span><br><span class="line">best = 0//dummy候选人，默认为最差的</span><br><span class="line">for i = 1 to n</span><br><span class="line">interview candidate i</span><br><span class="line">if candidate i is better than candidate best</span><br><span class="line">best = i</span><br><span class="line">hire candidate i</span><br></pre></td></tr></table></figure><p>面试的费用设为$c_i$，雇佣的费用设为$c_h$，设雇佣的人数为$m$，则总费用为$O(c_in+c_hm)$。其中面试费用一定，而雇佣费用不一定。</p><p><strong>最坏情形</strong> 应聘者质量按出现次序严格递增，相当于对每个面试的人都雇佣了一次(每次都把上一次的人辞退然后招新人)</p><p><strong>概率分析</strong> 首先假设关于输入的分布，然后分析该算法，计算出一个平均情形下的运行时间。在此问题中，我们用1到n将这些应聘者标号，而令$rank(i)$表示应聘者$i$的名次，并约定若$rank(i)&gt;rank(j)$，则代表$i$号比$j$号优秀，这n个应聘者的优秀程度序列具有$n!$种，且每种都是等概率的。</p><p><strong>随机算法</strong> 一个算法的行为不仅由输入决定，也由随机数生成器的数值决定，规定$RANDOM(a,\ b)$代表返回一个$a$和$b$之间的整数(包含边界)，且每个结果概率相等。一般而言，对于算法的输入服从某种概率分布时，我们分析平均情况运行时间；当算法本身做随机选择时，我们分析期望运行时间。</p><p><strong>指示器随机变量</strong> 形如<br>$$<br>I{A}&#x3D;\begin{cases} 1\ 如果A发生\<br>0\ 如果A不发生<br>\end{cases}<br>$$<br>​<strong>引理</strong> 给定一个样本空间S和S中的一个事件A，设$X_A&#x3D;I{A}$，那么$E[X_A]&#x3D;Pr{A}$，由期望定义很容易得出。</p><p>​总和的期望等于n个随机变量期望值的总和，无论随机变量是否存在依赖关系</p><p><strong>雇佣问题的分析</strong></p><p>​设$X$是一个随机变量，其值就等于整个过程雇佣了多少次。那么，平均情况下，$E[X]&#x3D;\sum_{x&#x3D;1}^nxPr{X&#x3D;x}$，这种计算很麻烦，因此我们采用指示器随机变量。<br>$$<br>X_i&#x3D;I{应聘者i被雇佣}&#x3D;\begin{cases}1\ 如果应聘者i被雇佣\<br>0\ 如果应聘者i不被雇佣<br>\end{cases}<br>$$<br>​问题转化为分析应聘者$i$被雇佣的概率，这表明应聘者$i$比之前的$i-1$人都优秀，由于应聘者以随机顺序出现，因此这$i$个人每个人都等可能是目前最有资格的，因此我们得到$E[X_i]&#x3D;Pr{X_i&#x3D;1}&#x3D;\frac{1}{i}$。</p><p>​因此，<br>$$<br>\begin{align*}<br>E[X]&amp;&#x3D;E[\sum_{i&#x3D;1}^n X_i]\<br>&amp;&#x3D;\sum_{i&#x3D;1}^nE[X_i]\<br>&amp;&#x3D;\sum_{i&#x3D;1}^n1&#x2F;i\<br>&amp;&#x3D;\mathrm{ln}n+O(1)<br>\end{align*}<br>$$<br>​结论是，我们尽管面试了$n$个人，但平均只雇佣了$\mathrm{ln}n$个人</p><p><strong>随机算法</strong> 确定性算法对于任何不变输入，雇佣新应聘者的次数不会发生改变，我们对于某些排名序列，例如{5, 2, 1, 8, 4, 7, 10, 9, 3, 6}，依次面试，则在任何情况下我们都会雇佣3次，即在遇到排名为5，8，10的人时(数字越大代表越优秀)。但对于随机算法来说，我们让随机发生在算法上，而不是输入分布上。</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">RANDOMIZED-HIRE-ASSISTANT(n)</span><br><span class="line">randomly permute the list of candidates</span><br><span class="line">best = 0</span><br><span class="line">for i = 1 to n</span><br><span class="line">interview candidate i</span><br><span class="line">if candidate i is better than candidate best</span><br><span class="line">best = i</span><br><span class="line">hire candidate i</span><br></pre></td></tr></table></figure><p>它们区别就在于多了第一步：随机生成一个序列，或者理解为将给定名单打乱顺序。我们在分析确定性算法时，是假设输入是某种分布，但对于随机算法而言，相当于设定好了某种概率分布，因此不再需要通过假设来分析了。</p><p><strong>在线雇佣问题</strong></p><p>假设我们现在不追求雇佣严格意义上最好的应聘者，因为我们不希望不停雇佣新人解雇旧人，每次面试，我们要么拒绝，要么马上提供职位，无论后面是否有更好的应聘者。我们如何在最小化面试次数和最大化应聘者质量之间取得平衡？我们采取一个策略，每次面试都给应聘者一个唯一的分数，并做好记录。对于n个应聘者，选择一个正整数$k&lt;n$，面试然后直接拒绝前$k$个应聘者，在雇佣后面遇到的比前$k$个应聘者分数都高的第一个应聘者，如果后面没有遇到超过前$k$个应聘者分数的应聘者，则雇佣最后一个应聘者。</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">ON-LINE-MAXIMUM(k, n)</span><br><span class="line">bestscore = -INF</span><br><span class="line">for i = 1 to k</span><br><span class="line">if score(i) &gt; bestscore</span><br><span class="line">bestscore = score(i)</span><br><span class="line">for i = k + 1 to n</span><br><span class="line">if score(i) &gt; bestscore</span><br><span class="line">return i</span><br><span class="line">return n</span><br></pre></td></tr></table></figure><p>那么我们如何确定下来这个$k$的值使得得到的结果是最好的呢？</p><p>​设$M(j)&#x3D;max_{1\le i\le j}{score(i)}$表示应聘者$1～j$中最高分数。设$S$表示成功选择了最好的应聘者(没有错过)，$S_i$表示成功选择了最好的应聘者且他是第$i$个面试者。那么$Pr{S}&#x3D;\sum_{i&#x3D;1}^nPr{S_i}$，根据规则，不选前$k$个人，则对于$i\le k,\ Pr{S_i}&#x3D;0$，因此$Pr{S}&#x3D;\sum_{i&#x3D;k+1}^nPr{S_i}$，那么如何计算$S_i$发生的概率？它要发生则必须满足(1)最好的应聘者本身在位置$i$，设为$B_i$，(2)从$k+1$到$i-1$的人不能比前$k$个人分数高，否则会被提前选走，设为$O_i$，且二者独立，因为$O_i$依赖于前$i-1$个人的分数顺序，$B_i$依赖于$i$位置相比于前后所有位置的分数值。改变前$i-1$人的分数顺序并不影响第$i$个位置是否比他们及其后面的分数都大，而改变第$i$个人的分数使其不大于剩下任意的人，也根本不会改变前$i-1$人的顺序。<br>$$<br>Pr{S_i}&#x3D;Pr{B_i\cap O_i}&#x3D;Pr{B_i}Pr{O_i}\<br>Pr{B_i}&#x3D;1&#x2F;n<br>$$<br>​若使得$O_i$发生，则需要保证前$i-1$个人的最大分数落在前$k$个人里，否则会导致提前选中，因此$Pr{O_i}&#x3D;k&#x2F;(i-1)$。</p><p>​综上，<br>$$<br>Pr{S}&#x3D;\sum_{i&#x3D;k+1}^nPr{S_i}&#x3D;\sum_{i&#x3D;k+1}^n\frac{k}{n(i-1)}&#x3D;\frac{k}{n}\sum_{i&#x3D;k}^{n-1}\frac{1}{i}<br>$$<br>​由于<br>$$<br>\int_k^n\frac{1}{x}\mathrm{d}x\le\sum_{i&#x3D;k}^{n-1}\frac{1}{i}\le\int_{k-1}^{n-1}\frac{1}{x}\mathrm{d}x<br>$$<br>​因此<br>$$<br>\frac{k}{n}(\mathrm{ln}n-\mathrm{ln}k)\le Pr{S}\le\frac{k}{n}(\mathrm{ln}(n-1)-\mathrm{ln}(k-1))<br>$$<br>​我们求使下界最大的$k$，对$k$求导得到$\frac{\mathrm{ln}n}{n}-\frac{\mathrm{ln}k+1}{n}$，因此当$k&#x3D;n&#x2F;e$时，取最大值，此时成功雇佣到最好的应聘者的概率至少为$\frac{1}{e}$。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h5 id=&quot;概率分析和随机算法&quot;&gt;&lt;a href=&quot;#概率分析和随机算法&quot; class=&quot;headerlink&quot; title=&quot;概率分析和随机算法&quot;&gt;&lt;/a&gt;概率分析和随机算法&lt;/h5&gt;&lt;p&gt;1.雇佣问题&lt;/p&gt;
+&lt;p&gt;​	雇佣代理向你推荐合适的候选人，每次推荐需要一笔代理费</summary>
+      
+    
+    
+    
+    <category term="CS" scheme="http://example.com/categories/CS/"/>
+    
+    <category term="算法导论" scheme="http://example.com/categories/CS/%E7%AE%97%E6%B3%95%E5%AF%BC%E8%AE%BA/"/>
+    
+    
+    <category term="算法" scheme="http://example.com/tags/%E7%AE%97%E6%B3%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>分治策略</title>
+    <link href="http://example.com/2023/03/19/%E5%88%86%E6%B2%BB%E7%AD%96%E7%95%A5/"/>
+    <id>http://example.com/2023/03/19/%E5%88%86%E6%B2%BB%E7%AD%96%E7%95%A5/</id>
+    <published>2023-03-19T11:57:15.000Z</published>
+    <updated>2023-03-19T11:58:28.310Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="分治策略"><a href="#分治策略" class="headerlink" title="分治策略"></a>分治策略</h3><p><strong>如何递归地求解一个问题?</strong> 分为三步: 分解、解决、合并。分解的时候只管将问题划分为子问题，即形式与原问题一样，规模更小的问题。解决是待分解到足够小以至于直接求解没有任何困难时，直接求解。合并是将子问题的解组成原问题的解，是一步简单的组合。未完全分解的较大的子问题叫<strong>递归情况</strong>，不需要再递归的足够小的子问题叫<strong>基本情况</strong>。</p><p>1.<strong>递归式</strong> 描述把问题划分为子问题时，原问题与子问题关系的表达式，如果每一步都把问题分成1:2的大小，且分解与合并的时间为线性，那么可以得到$T(n)&#x3D;T(2n&#x2F;3)+T(n&#x2F;3)+\Theta(n)$的表达式。这种表达式不一定是按比例分解，还可能是按加减法来分解子问题，如求解斐波那契数列的递归方法。</p><p>2.<strong>递归式的一种常见形式</strong> 对于$T(n)&#x3D;aT(n&#x2F;b)+f(n)$，$a\ge1,b&gt;1$，这代表着我们每次分解生成$a$个规模为原来的$1&#x2F;b$大小的子问题，$f(n)$代表分解和合并的时间代价。一般情况下，我们忽略取整问题以及边界条件，例如对奇数归并排序的情况下，不能完全等分为一半大小的子问题，但是不影响我们的求解结果。</p><p>3.<strong>最大子数组问题</strong> 假定你知道股票17天内每天的价格，你能找到使得利益最大化的买入和卖出分别是哪一天吗？</p><table><thead><tr><th>天</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th></tr></thead><tbody><tr><td>价格</td><td>100</td><td>113</td><td>110</td><td>85</td><td>105</td><td>102</td><td>86</td><td>63</td><td>81</td><td>101</td><td>94</td><td>106</td><td>101</td><td>79</td><td>94</td><td>90</td><td>97</td></tr><tr><td>变化</td><td></td><td>13</td><td>-3</td><td>-25</td><td>20</td><td>-3</td><td>-16</td><td>-23</td><td>18</td><td>20</td><td>-7</td><td>12</td><td>-5</td><td>-22</td><td>15</td><td>-4</td><td>7</td></tr></tbody></table><p>​<strong>暴力求解</strong> 遍历每一种买和卖的可能，这将带给我们$\Omega(n^2)$的代价(根据排列组合)</p><p>​<strong>问题变换</strong> 我们的目标是要设计出一个$o(n^2)$的算法，即严格比$n^2$低阶的算法。那么我们需要转换一下思路: 我们聚焦于表格第三行，即股票每天的变化，我们需要找到第三行的一段子数组(连续的一段子集)，使得子数组的元素和最大。乍一看，我们仍然需要检查所有可能的子数组，和暴力求解没什么区别。但我们可以进一步思考一下，想办法利用之前算过的子数组以大幅降低计算量。</p><p>​<strong>采取分治策略</strong> 如果我们将数组等分，那么最大子数组可能出现在以下三种情况中的一种: 完全落在左边、完全落在右边以及跨过中点。对于前两种情况直接就是一个更小规模的相同的问题，我们先只管分解不管解决，但第三种情况是一个需要我们去着重处理的新问题: 找到横跨中点的那个最大子数组。然后在每层递归我们都给出这三种情况找到的最大子数组的和，然后通过比较返回最大的那个给上一层递归。对于第三种情况下，我们可以在线性时间内找到跨越中点的最大子数组:</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">FIND-MAX-CROSSING-SUBARRAY(A, low, mid, high)//mid是中点，low和high是两边</span><br><span class="line">left-sum = -INF//left-sum是一个变量名，下同，INF是一个很大的数</span><br><span class="line">sum = 0</span><br><span class="line">for i = mid downto low</span><br><span class="line">sum = sum + A[i]//从中间向左边延伸，设法找到向左延伸的最远处</span><br><span class="line">if sum &gt; left-sum//如果新加进来的若干元素以后，和变大了，则允许向左延伸</span><br><span class="line">left-sum = sum</span><br><span class="line">max-left = i//更新向左的距离</span><br><span class="line">right-sum = -INF//对右侧也做一样的事</span><br><span class="line">sum = 0</span><br><span class="line">for j = mid + 1 to high</span><br><span class="line">sum = sum + A[j]</span><br><span class="line">if sum &gt; right-sum</span><br><span class="line">right-sum = sum</span><br><span class="line">max-right = j</span><br><span class="line">return (max-left, max-right, left-sum + right-sum)//返回向左向右延伸的距离以及数组的元素和</span><br></pre></td></tr></table></figure><p>解决了这个最棘手的情况，我们的递归程序就呼之欲出了。</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">FIND-MAXIMUM-SUBARRAY(A, low, high)</span><br><span class="line">if high == low</span><br><span class="line">return (low, high, A[low])//基本情况，递归出口</span><br><span class="line">else mid = (low + high) / 2</span><br><span class="line">(left-low, left-high, left-sum) =</span><br><span class="line">FIND-MAXIMUM-SUBARRAY(A, low, mid)//找到左半数组的最大子数组</span><br><span class="line">(right-low, right-high, right-sum) = </span><br><span class="line">FIND-MAXIMUM-SUBARRAY(A, mid + 1, high)//找到右半数组的最大子数组</span><br><span class="line">(cross-low, cross-high, cross-sum) = </span><br><span class="line">FIND-MAX-CROSSING-SUBARRAY(A, low, mid, high)//找到横跨中点的最大子数组</span><br><span class="line">if left-sum &gt;= right-sum and left-sum &gt;= cross-sum//返回他们三个最大的那个子数组</span><br><span class="line">return (left-low, left-high, left, sum)</span><br><span class="line">elseif right-sum &gt;= left-sum and right-sum &gt;= cross-sum</span><br><span class="line">return (right-low, right-high, right-sum)</span><br><span class="line">else return (cross-low, cross-high, cross-sum)</span><br></pre></td></tr></table></figure><p>处理横跨中点的情况需要线性时间，基本情况需要常数时间，我们可以得到递归式<br>$$<br>T(n)&#x3D;\begin{cases}<br>\Theta(1),\ n&#x3D;1 \<br>2T(n&#x2F;2)+\Theta(n),\ n&gt;1 \<br>\end{cases}<br>$$<br>可以解出$T(n)&#x3D;\Theta(n\lg n)$，具体解法将在下面介绍。</p><p><strong>用主方法求解递归式</strong> 令$a \ge 1$和$b&gt;1$是常数，$f(n)$是一个函数，$T(n)$是定义在非负整数上的递归式: $T(n)&#x3D;aT(n&#x2F;b)+f(n)$，则</p><p>​1.若对某个常数$\epsilon &gt;0$，有$f(n)&#x3D;O(n^{\log_ba-\epsilon})$，则$T(n)&#x3D;\Theta(n^{\log_ba})$</p><p>​2.若$f(n)&#x3D;\Theta(n^{\log_ba})$，则$T(n)&#x3D;\Theta(n^{\log_ba}\lg n)$</p><p>​3.若对某个常数$\epsilon&gt;0$，有$f(n)&#x3D;\Omega(n^{\log_ba+\epsilon})$，且对某个常数$c&lt;1$和所有足够大的$n$有$af(n&#x2F;b)\le cf(n)$，则$T(n)&#x3D;\Theta(f(n))$</p><p>其实这三种情况下，我们比较的都是递归的代价和本层的其他的非递归代价哪个占了主导地位，如果$f(n)$的代价很大，那最终结果由$f(n)$决定，如第三个情况。如果$f(n)$更小，如第一种情况，则可以将$f(n)$忽略，得到第一个情况。而剩下的那个情况就如同前文的求解最大子数组的算法，是一个$n\lg n$阶的算法。</p><p>举个例子，对于$T(n)&#x3D;9T(n&#x2F;3)+n$，比较$n$和$n^{\log_39}$，易知$\epsilon$取1时，符合第一种情况，因此解出$T(n)&#x3D;\Theta(n^{\log_39})&#x3D;\Theta(n^2)$。而如果$T(n)&#x3D;T(2n&#x2F;3)+1$，我们比较$1$和$n^{\log_{3&#x2F;2}1}&#x3D;1$，因此落入第二种情况，解得$T(n)&#x3D;\Theta(\lg n)$。而如果$T(n)&#x3D;3T(n&#x2F;4)+n\lg n$，比较$n\lg n$和$n^{\log_43}\approx n^{0.8}$，我们容易找到$\epsilon\approx0.2$，满足$f(n)&#x3D;\Omega(n^{\log_34+\epsilon})$，而且$3f(n&#x2F;4)&#x3D;3(n&#x2F;4)\lg(n&#x2F;4)\le3(n&#x2F;4)\lg n&#x3D;\frac{3}{4}f(n)$，因此完全符合第三类情况，因此$T(n)&#x3D;\Theta(n\lg n)$。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h3 id=&quot;分治策略&quot;&gt;&lt;a href=&quot;#分治策略&quot; class=&quot;headerlink&quot; title=&quot;分治策略&quot;&gt;&lt;/a&gt;分治策略&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;如何递归地求解一个问题?&lt;/strong&gt; 分为三步: 分解、解决、合并。分解的时候只管将问题划分为子问题，</summary>
+      
+    
+    
+    
+    <category term="CS" scheme="http://example.com/categories/CS/"/>
+    
+    <category term="算法导论" scheme="http://example.com/categories/CS/%E7%AE%97%E6%B3%95%E5%AF%BC%E8%AE%BA/"/>
+    
+    
+    <category term="算法" scheme="http://example.com/tags/%E7%AE%97%E6%B3%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>函数的增长</title>
+    <link href="http://example.com/2023/03/19/%E5%87%BD%E6%95%B0%E7%9A%84%E5%A2%9E%E9%95%BF/"/>
+    <id>http://example.com/2023/03/19/%E5%87%BD%E6%95%B0%E7%9A%84%E5%A2%9E%E9%95%BF/</id>
+    <published>2023-03-19T11:55:35.000Z</published>
+    <updated>2023-03-19T11:56:47.011Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="函数的增长"><a href="#函数的增长" class="headerlink" title="函数的增长"></a>函数的增长</h3><p>1.$\Theta$记号</p><p>$$\Theta(g(n))&#x3D;{f(n):存在正常量c_1、c_2和n_0,使得对所有n\ge n_0,有0\le c_1g(n)\le f(n) \le c_2g(n)}$$</p><p>理解为当$n$足够大时，$f(n)$能完全夹入$g(n)$的两个常数倍的函数值之间，因此$g(n)$时$f(n)$的一个渐进紧确界。$\Theta(g(n))$表达的是一组函数的集合，$f(n)$是能归到集合里的某个具体函数。举个例子: $f(n)&#x3D;\frac{1}{2}n^2-3n$，寻找满足条件的$c_1,c_2$，使对足够大的$n$，$c_1n^2\le\frac{1}{2}n^2-3n\le c_2n^2$恒成立，即$c_1 \le \frac{1}{2}-\frac{3}{n}\le c_2$，取$c_1\le1&#x2F;14$，$c_2\ge1&#x2F;2$即可。因此$\frac{1}{2}n^2-3n&#x3D;\Theta(n^2)$。这个例子也告诉我们，函数的低阶项在确定渐进紧确界时可忽略。</p><p>2.$O$记号</p><p>$$O(g(n))&#x3D;{f(n):存在正常量c和n_0,使得对所有n\ge n_0,有0\le f(n)\le cg(n)}$$</p><p>因此$g(n)$某个常量倍数是$f(n)$的渐进上界，而不要求是紧确的上界。例如$n&#x3D;O(n^2)$。可能紧确也可能不紧确。</p><p>3.$\Omega$记号</p><p>$$\Omega(g(n))&#x3D;{f(n):存在正常量c和n_0,使得对所有的n\ge n_0,有0\le cg(n)\le f(n)}$$</p><p>这个记号给出了$f(n)$的渐进下界。</p><p><strong>若$f(n)$的渐进上界和渐进下界相等，则它也是$f(n)$的渐进确界</strong></p><p>4.$o$记号</p><p>$$o(g(n))&#x3D;{f(n):对任意正常量c&gt;0,存在常量n_0&gt;0,使得对所有n\ge n_0,有0 \le f(n) &lt; cg(n)}$$</p><p>由于$c$的任意性，$o$记号给出的是非渐进紧确的上界，而且一定不可能是紧确的。</p><p>5.$\omega$记号</p><p>$$\omega(g(n))&#x3D;{f(n):对任意正常量c&gt;0,存在常量n_0&gt;0,使得对所有n\ge n_0,有0 \le cg(n) &lt; f(n)}$$</p><p>$\omega$记号会给出非渐进紧确的下界。</p><p>6.性质</p><p><strong>传递性</strong>若$f(n)&#x3D;K(g(n)),g(n)&#x3D;K(h(n))$，则$f(n)&#x3D;K(h(n)),K&#x3D;\Theta,O,\Omega,o,\omega$</p><p><strong>自反性</strong>$f(n)&#x3D;K(f(n)),K&#x3D;\Theta,O,\Omega$</p><p><strong>对称性</strong>$f(n)&#x3D;\Theta(g(n))\leftrightarrow g(n)&#x3D;\Theta(f(n))$</p><p><strong>转置对称性</strong></p><p>$f(n)&#x3D;O(g(n))\leftrightarrow g(n)&#x3D;\Omega(f(n))$</p><p>$f(n)&#x3D;o(g(n))\leftrightarrow g(n)&#x3D;\omega(f(n))$</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h3 id=&quot;函数的增长&quot;&gt;&lt;a href=&quot;#函数的增长&quot; class=&quot;headerlink&quot; title=&quot;函数的增长&quot;&gt;&lt;/a&gt;函数的增长&lt;/h3&gt;&lt;p&gt;1.$\Theta$记号&lt;/p&gt;
+&lt;p&gt;$$\Theta(g(n))&amp;#x3D;{f(n):存在正常量c_1、c_2</summary>
+      
+    
+    
+    
+    <category term="CS" scheme="http://example.com/categories/CS/"/>
+    
+    <category term="算法导论" scheme="http://example.com/categories/CS/%E7%AE%97%E6%B3%95%E5%AF%BC%E8%AE%BA/"/>
+    
+    
+    <category term="算法" scheme="http://example.com/tags/%E7%AE%97%E6%B3%95/"/>
+    
+  </entry>
   
   <entry>
     <title>算法基础</title>
