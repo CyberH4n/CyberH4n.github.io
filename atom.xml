@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2023-03-19T05:09:53.514Z</updated>
+  <updated>2023-03-19T10:15:28.236Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -17,23 +17,51 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>我的第一篇文章</title>
-    <link href="http://example.com/2023/03/19/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/"/>
-    <id>http://example.com/2023/03/19/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/</id>
-    <published>2023-03-19T04:44:04.000Z</published>
-    <updated>2023-03-19T05:09:53.514Z</updated>
+    <title>算法基础</title>
+    <link href="http://example.com/2023/03/19/%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/"/>
+    <id>http://example.com/2023/03/19/%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/</id>
+    <published>2023-03-19T10:11:04.000Z</published>
+    <updated>2023-03-19T10:15:28.236Z</updated>
     
-    <content type="html"><![CDATA[<p>由于微信公众号对用户有诸多限制：一天只能提交一次、不能在线修改文章、奇奇怪怪的md格式转换问题等等，我萌生了创建一个个人博客的想法。主要来记录CS或EE的一些学习或摸索的过程，想来大概也会在以后找工作的时候发挥一点作用吧。</p>]]></content>
+    <content type="html"><![CDATA[<h3 id="算法基础"><a href="#算法基础" class="headerlink" title="算法基础"></a>算法基础</h3><p>一.插入排序</p><p>​和打扑克牌的排序算法相同，依次从桌子上拿扑克牌放到手上，放到手上时需要放在手上牌堆的正确位置。</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">INSERTION-SORT(A):</span><br><span class="line">for j = 2 to A.length</span><br><span class="line">key = A[j]</span><br><span class="line">//将key插入到已排序列的正确位置</span><br><span class="line">i = j - 1</span><br><span class="line">while i &gt; 0 and A[i] &gt; key</span><br><span class="line">A[i+1] = A[i]</span><br><span class="line">i = i - 1</span><br><span class="line">A[i+1] = key</span><br></pre></td></tr></table></figure><p>简要分析: 第2行单次需要常数$c_1$的时间，设循环$n$次，则第3、5行单次分别为$c_2,c_3$，循环$n-1$次，这是因为for循环不满足条件后不再进入循环体。第6行单次$c_4$，循环次数为$\sum _{j&#x3D;2}^nt_j$，$t_j$代表第$j$次for循环时，while循环执行的次数，这取决于数据的具体情况。7、8行与3、5行类似，需要减1，第9行和第3、5行的次数相同。</p><p>总次数$T(n)&#x3D;c_1n+c_2(n-1)+c_3(n-1)+c_4\sum_{j&#x3D;2}^nt_j+\ c_5\sum_{j&#x3D;2}^n(t_j-1)+c_6\sum_{j&#x3D;2}^n(t_j-1)+c_7(n-1)$</p><p>当每一次新插入的元素比有序序列的最后一个元素还大，也就是排序前整个待排序列就已经是从小到大的有序序列时，相当于每次的新扑克牌直接放在最后的位置，此时$t_j&#x3D;1$，while循环只进行1次，$T(n)&#x3D;c_1n+c_2(n-1)+c_3(n-1)+c_4(n-1)+c_7(n-1)$，因此是线性函数。而当完全倒序的时候，$t_j&#x3D;j$，此时新扑克牌要一直向前比较到第一张，因此求和式是等差数列的和，是二次的。平均情况下，每次新的扑克牌要放到排好的扑克牌中间，$t_j\approx\frac{j}{2}$，此时仍然是等差数列求和是二次的。</p><p>二.归并排序</p><p>​将n个元素的数组排列好需要先将左半部分和右半部分分别排好，然后在两组排好的序列中分别添加游标，将左游标和右游标比较，将较小的那个存入最终序列，然后移动该游标继续与另一个游标的值比较。对于左半部分和右半部分也需要递归地用这种方法排好。</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">MERGE(A, p, q, r)://p到q为有序的左半部分，q+1到r为有序的右半部分</span><br><span class="line">n1 = q - p + 1//左半部分元素个数</span><br><span class="line">n2 = r - q//右半部分元素个数</span><br><span class="line">let L[1..n1+1] and R[1..n2+1] be new arrays</span><br><span class="line">for i = 1 to n1</span><br><span class="line">L[i] = A[p+i-1] //提取左半部分存入</span><br><span class="line">for j = 1 to n2</span><br><span class="line">R[j] = A[q+j]//提取右半部分存入</span><br><span class="line">L[n1+1] = INF//为后面归并排序的递归出口做准备</span><br><span class="line">R[n2+1] = INF</span><br><span class="line">i = 1</span><br><span class="line">j = 1</span><br><span class="line">for k = p to r//将左半部分和右半部分合并</span><br><span class="line">if L[i] &lt;= R[j]</span><br><span class="line">A[k] = L[i]</span><br><span class="line">i = i + 1</span><br><span class="line">else A[k] = R[j]</span><br><span class="line">j = j + 1</span><br><span class="line"></span><br></pre></td></tr></table></figure><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">MERGE-SORT(A, p, r):</span><br><span class="line">if p &lt; r</span><br><span class="line">q = (p + r) / 2</span><br><span class="line">MERGE-SORT(A, p, q)//排左半部分</span><br><span class="line">MERGE-SORT(A, q+1, r)//排右半部分</span><br><span class="line">MERGE(A, p, q, r)//将左半部分和右半部分合并</span><br></pre></td></tr></table></figure><p>简要分析: 设总时间为$T(n)$，则总时间包括排左半部分和右半部分的时间和加上合并的时间(单层循环是线性时间)，因此可以得到<br>$$<br>T(n)&#x3D;\begin{cases}<br>c,n&#x3D;1 \<br>2T(n&#x2F;2)+cn,n&gt;1\<br>\end{cases}<br>$$<br><img src="01.png" alt="图解"></p><p>总代价是线性函数乘对数函数。</p>]]></content>
     
     
       
       
-    <summary type="html">&lt;p&gt;由于微信公众号对用户有诸多限制：一天只能提交一次、不能在线修改文章、奇奇怪怪的md格式转换问题等等，我萌生了创建一个个人博客的想法。主要来记录CS或EE的一些学习或摸索的过程，想来大概也会在以后找工作的时候发挥一点作用吧。&lt;/p&gt;
-</summary>
+    <summary type="html">&lt;h3 id=&quot;算法基础&quot;&gt;&lt;a href=&quot;#算法基础&quot; class=&quot;headerlink&quot; title=&quot;算法基础&quot;&gt;&lt;/a&gt;算法基础&lt;/h3&gt;&lt;p&gt;一.插入排序&lt;/p&gt;
+&lt;p&gt;​	和打扑克牌的排序算法相同，依次从桌子上拿扑克牌放到手上，放到手上时需要放在手上牌堆的正确位置</summary>
       
     
     
     
+    <category term="CS" scheme="http://example.com/categories/CS/"/>
+    
+    <category term="算法导论" scheme="http://example.com/categories/CS/%E7%AE%97%E6%B3%95%E5%AF%BC%E8%AE%BA/"/>
+    
+    
+    <category term="算法" scheme="http://example.com/tags/%E7%AE%97%E6%B3%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>建设中的个人博客</title>
+    <link href="http://example.com/2023/03/19/%E5%BB%BA%E8%AE%BE%E4%B8%AD%E7%9A%84%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/"/>
+    <id>http://example.com/2023/03/19/%E5%BB%BA%E8%AE%BE%E4%B8%AD%E7%9A%84%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/</id>
+    <published>2023-03-19T10:01:01.000Z</published>
+    <updated>2023-03-19T10:16:33.156Z</updated>
+    
+    <content type="html"><![CDATA[<p>大家好啊！曾经总是非常羡慕网上的大神拥有一个自己的网站，如今粗浅的学了一点计网，又积累了一些python后端开发的项目经验(实际上几乎不算是经验)，便蠢蠢欲动打算建一个自己的网站。这个网站主要是静态网页，不涉及服务器传递数据。我找了一个极简的模板作为个人网站的1.0版本，后面也许会学一下前端三件套在有生之年自己开发一个网站 - 不过目前也暂时只能用别人的模板了。</p><p>折腾了一个周末遇到了非常多的问题，但幸运的是自己不断在网上找教程也终于折腾出来了。可能部分细节仍然会有一些瑕疵，只怪本人技艺不精。</p><p>建这个网站主要是因为微信公众号令人无语的机制：不能留言评论、一天只能提交一次、发了以后只能针对某个字修改。实在是太不自由！这个网站本身依托于github，所以似乎也不用备案hhh，省去了很多麻烦。评论区功能是基于Valine配置的，大家评论的内容我都可以看到，但尽管不需要备案，仍然需要强调的是：互联网不是法外之地，希望大家谨言慎行。</p><p>这个网站我目前的打算是作为我自学CS的见证，当然，偶尔可能也会涉及电子信息相关的文章，甚至还会有一些生活记录。总之，希望大家看得开心，多多互动！</p><p>注：公式可能在个别浏览器不能正常显示</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;大家好啊！曾经总是非常羡慕网上的大神拥有一个自己的网站，如今粗浅的学了一点计网，又积累了一些python后端开发的项目经验(实际上几乎不算是经验)，便蠢蠢欲动打算建一个自己的网站。这个网站主要是静态网页，不涉及服务器传递数据。我找了一个极简的模板作为个人网站的1.0版本，后</summary>
+      
+    
+    
+    
+    
+    <category term="日常" scheme="http://example.com/tags/%E6%97%A5%E5%B8%B8/"/>
     
   </entry>
   

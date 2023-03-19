@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+
+    
+
+    <!-- 渲染优化 -->
+    <meta name="renderer" content="webkit">
+    <meta name="force-rendering" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="HandheldFriendly" content="True" >
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!--icon-->
+
+    
+    
+    
+    
+    
+
+
+    <!-- meta -->
+
+
+<title>算法基础 | CyberH4n</title>
+
+
+    <meta name="keywords" content="算法">
+
+
+
+
+    <!-- OpenGraph -->
+ 
+    <meta name="description" content="算法基础一.插入排序 ​	和打扑克牌的排序算法相同，依次从桌子上拿扑克牌放到手上，放到手上时需要放在手上牌堆的正确位置。 123456789INSERTION-SORT(A):	for j &#x3D; 2 to A.length		key &#x3D; A[j]		&#x2F;&#x2F;将key插入到已排序列的正确位置		i &#x3D; j - 1		while i &gt; 0 and A[i] &gt; key			A[i+1] &#x3D; A">
+<meta property="og:type" content="article">
+<meta property="og:title" content="算法基础">
+<meta property="og:url" content="http://example.com/2023/03/19/%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/index.html">
+<meta property="og:site_name" content="CyberH4n">
+<meta property="og:description" content="算法基础一.插入排序 ​	和打扑克牌的排序算法相同，依次从桌子上拿扑克牌放到手上，放到手上时需要放在手上牌堆的正确位置。 123456789INSERTION-SORT(A):	for j &#x3D; 2 to A.length		key &#x3D; A[j]		&#x2F;&#x2F;将key插入到已排序列的正确位置		i &#x3D; j - 1		while i &gt; 0 and A[i] &gt; key			A[i+1] &#x3D; A">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2023/03/19/%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/01.png">
+<meta property="article:published_time" content="2023-03-19T10:11:04.000Z">
+<meta property="article:modified_time" content="2023-03-19T10:15:28.236Z">
+<meta property="article:author" content="Jason Han">
+<meta property="article:tag" content="算法">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2023/03/19/%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80/01.png">
+
+
+    
+<link rel="stylesheet" href="/css/style/main.css">
+ 
+
+    
+    
+        <link rel="stylesheet" id="hl-default-theme" href="/css/highlight/default.css" media="none" >
+        
+            <link rel="stylesheet" id="hl-dark-theme" href="/css/highlight/dark.css" media="none">
+        
+    
+
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/style/dark.css">
+
+    
+<script src="/js/darkmode.js"></script>
+
+
+
+     
+
+    <!-- custom head -->
+
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="CyberH4n" type="application/atom+xml">
+</head>
+
+    <body>
+        <div id="app" tabindex="-1">
+            <header class="header">
+    <div class="header__left">
+        <a href="/" class="button">
+            <span class="logo__text">CyberH4n</span>
+        </a>
+    </div>
+    <div class="header__right">
+        
+            <div class="navbar__menus">
+                
+                    <a href="/" class="navbar-menu button">首页</a>
+                
+                    <a href="/tags/" class="navbar-menu button">标签</a>
+                
+                    <a href="/archives/" class="navbar-menu button">归档</a>
+                
+                    <a href="/friends/" class="navbar-menu button">友链</a>
+                
+                    <a href="/page/" class="navbar-menu button">Page</a>
+                
+            </div>
+        
+        
+        
+
+        
+        
+    <a href="javaScript:void(0);" id="btn-toggle-dark">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+    </a>
+
+
+        
+            <a class="dropdown-icon button" id="btn-dropdown" tabindex="0"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width='24' height='24' fill="none" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round"><path fill="currentColor" d="M3.314,4.8h13.372c0.41,0,0.743-0.333,0.743-0.743c0-0.41-0.333-0.743-0.743-0.743H3.314c-0.41,0-0.743,0.333-0.743,0.743C2.571,4.467,2.904,4.8,3.314,4.8z M16.686,15.2H3.314c-0.41,0-0.743,0.333-0.743,0.743s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,15.2,16.686,15.2z M16.686,9.257H3.314c-0.41,0-0.743,0.333-0.743,0.743s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,9.257,16.686,9.257z"></path></svg></a>
+            <div class="dropdown-menus" id="dropdown-menus">
+                
+                    <a href="/" class="dropdown-menu button">首页</a>
+                
+                    <a href="/tags/" class="dropdown-menu button">标签</a>
+                
+                    <a href="/archives/" class="dropdown-menu button">归档</a>
+                
+                    <a href="/friends/" class="dropdown-menu button">友链</a>
+                
+                    <a href="/page/" class="dropdown-menu button">Page</a>
+                
+            </div>
+        
+    </div>
+</header>
+
+
+            <main class="main">
+    
+
+<div class="post-title">
+    <h1 class="post-title__text">
+        算法基础
+    </h1>
+    <div class="post-title__meta">
+        <a href="/archives/2023/03/" class="post-meta__date button">2023-03-19</a>
+        
+    <span class="separate-dot"></span><a href="/categories/CS/" class="button">CS</a>
+
+    <span class="separate-dot"></span><a href="/categories/CS/%E7%AE%97%E6%B3%95%E5%AF%BC%E8%AE%BA/" class="button">算法导论</a>
+
+ 
+        
+    
+    
+
+
+ 
+
+ 
+    </div>
+</div>
+
+
+
+<article class="post content-card">
+    <div class="post__header"></div>
+    <div class="post__content">
+        <h3 id="算法基础"><a href="#算法基础" class="headerlink" title="算法基础"></a>算法基础</h3><p>一.插入排序</p>
+<p>​	和打扑克牌的排序算法相同，依次从桌子上拿扑克牌放到手上，放到手上时需要放在手上牌堆的正确位置。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">INSERTION-SORT(A):</span><br><span class="line">	for j = 2 to A.length</span><br><span class="line">		key = A[j]</span><br><span class="line">		//将key插入到已排序列的正确位置</span><br><span class="line">		i = j - 1</span><br><span class="line">		while i &gt; 0 and A[i] &gt; key</span><br><span class="line">			A[i+1] = A[i]</span><br><span class="line">			i = i - 1</span><br><span class="line">		A[i+1] = key</span><br></pre></td></tr></table></figure>
+
+<p>简要分析: 第2行单次需要常数$c_1$的时间，设循环$n$次，则第3、5行单次分别为$c_2,c_3$，循环$n-1$次，这是因为for循环不满足条件后不再进入循环体。第6行单次$c_4$，循环次数为$\sum _{j&#x3D;2}^nt_j$，$t_j$代表第$j$次for循环时，while循环执行的次数，这取决于数据的具体情况。7、8行与3、5行类似，需要减1，第9行和第3、5行的次数相同。</p>
+<p>总次数$T(n)&#x3D;c_1n+c_2(n-1)+c_3(n-1)+c_4\sum_{j&#x3D;2}^nt_j+\ c_5\sum_{j&#x3D;2}^n(t_j-1)+c_6\sum_{j&#x3D;2}^n(t_j-1)+c_7(n-1)$</p>
+<p>当每一次新插入的元素比有序序列的最后一个元素还大，也就是排序前整个待排序列就已经是从小到大的有序序列时，相当于每次的新扑克牌直接放在最后的位置，此时$t_j&#x3D;1$，while循环只进行1次，$T(n)&#x3D;c_1n+c_2(n-1)+c_3(n-1)+c_4(n-1)+c_7(n-1)$，因此是线性函数。而当完全倒序的时候，$t_j&#x3D;j$，此时新扑克牌要一直向前比较到第一张，因此求和式是等差数列的和，是二次的。平均情况下，每次新的扑克牌要放到排好的扑克牌中间，$t_j\approx\frac{j}{2}$，此时仍然是等差数列求和是二次的。</p>
+<p>二.归并排序</p>
+<p>​	将n个元素的数组排列好需要先将左半部分和右半部分分别排好，然后在两组排好的序列中分别添加游标，将左游标和右游标比较，将较小的那个存入最终序列，然后移动该游标继续与另一个游标的值比较。对于左半部分和右半部分也需要递归地用这种方法排好。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">MERGE(A, p, q, r)://p到q为有序的左半部分，q+1到r为有序的右半部分</span><br><span class="line">	n1 = q - p + 1	//左半部分元素个数</span><br><span class="line">	n2 = r - q	//右半部分元素个数</span><br><span class="line">	let L[1..n1+1] and R[1..n2+1] be new arrays</span><br><span class="line">	for i = 1 to n1</span><br><span class="line">		L[i] = A[p+i-1] //提取左半部分存入</span><br><span class="line">	for j = 1 to n2</span><br><span class="line">		R[j] = A[q+j]	//提取右半部分存入</span><br><span class="line">	L[n1+1] = INF	//为后面归并排序的递归出口做准备</span><br><span class="line">	R[n2+1] = INF</span><br><span class="line">	i = 1</span><br><span class="line">	j = 1</span><br><span class="line">	for k = p to r	//将左半部分和右半部分合并</span><br><span class="line">		if L[i] &lt;= R[j]</span><br><span class="line">			A[k] = L[i]</span><br><span class="line">			i = i + 1</span><br><span class="line">		else A[k] = R[j]</span><br><span class="line">			j = j + 1</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">MERGE-SORT(A, p, r):</span><br><span class="line">	if p &lt; r</span><br><span class="line">		q = (p + r) / 2</span><br><span class="line">		MERGE-SORT(A, p, q)	//排左半部分</span><br><span class="line">		MERGE-SORT(A, q+1, r)	//排右半部分</span><br><span class="line">		MERGE(A, p, q, r)	//将左半部分和右半部分合并</span><br></pre></td></tr></table></figure>
+
+<p>简要分析: 设总时间为$T(n)$，则总时间包括排左半部分和右半部分的时间和加上合并的时间(单层循环是线性时间)，因此可以得到<br>$$<br>T(n)&#x3D;\begin{cases}<br>c,n&#x3D;1 \<br>2T(n&#x2F;2)+cn,n&gt;1\<br>\end{cases}<br>$$<br><img src="01.png" alt="图解"></p>
+<p>总代价是线性函数乘对数函数。</p>
+
+    </div>
+     
+    <div class="post-footer__meta"><p>updated at 2023-03-19</p></div> 
+    <div class="post-entry__tags"><a href="/tags/%E7%AE%97%E6%B3%95/" class="post-tags__link button"># 算法</a></div> 
+</article>
+
+
+    <div class="nav">
+        <div class="nav__prev">
+            
+        </div>
+        <div class="nav__next">
+            
+                <a href="/2023/03/19/%E5%BB%BA%E8%AE%BE%E4%B8%AD%E7%9A%84%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/" class="nav__link">
+                    <div>
+                        <div class="nav__label">
+                            Next Post
+                        </div>
+                        <div class="nav__title">
+                            建设中的个人博客
+                        </div>
+                    </div>
+                    <div>
+                        <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M434.944 790.624l-45.248-45.248L623.04 512l-233.376-233.376 45.248-45.248L713.568 512z" fill="#808080"></path></svg>
+                    </div>
+                </a>
+            
+        </div>
+    </div>
+
+
+
+    <div class="post__comments content-card" id="comment">
+        
+    <h4>Comments</h4>
+    
+    
+    
+    <div id="valine_container" class="valine_thread"></div>
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+
+    </div>
+
+
+
+</main>
+
+            <footer class="footer">
+    
+    
+
+
+    
+     
+ 
+
+ 
+    
+        
+        <p class="footer-copyright">
+            Copyright © 2023 <a href="/">CyberH4n</a>
+        </p>
+    
+    
+    <p>Powered by <a href="https://hexo.io" target="_blank">Hexo</a> | Theme - <a href="https://github.com/ChrAlpha/hexo-theme-cards" target="_blank">Cards</a></p>
+</footer>
+
+        </div>
+         
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+ 
+
+
+
+ 
+
+
+    
+ 
+
+ 
+
+
+    <script>
+        if (typeof MathJax === 'undefined') {
+            window.MathJax = {
+                loader: {
+                    source: {
+                        '[tex]/amsCd': '[tex]/amscd',
+                        '[tex]/AMScd': '[tex]/amscd'
+                    }
+                },
+                tex: {
+                    inlineMath: {'[+]': [['$', '$']]},
+                    tags: 'ams'
+                },
+                options: {
+                    renderActions: {
+                        findScript: [10, doc => {
+                            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                                const display = !!node.type.match(/; *mode=display/);
+                                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                                const text = document.createTextNode('');
+                                node.parentNode.replaceChild(text, node);
+                                math.start = {node: text, delim: '', n: 0};
+                                math.end = {node: text, delim: '', n: 0};
+                                doc.math.push(math);
+                            });
+                        }, '', false],
+                        insertedScript: [200, () => {
+                            document.querySelectorAll('mjx-container').forEach(node => {
+                                let target = node.parentNode;
+                                if (target.nodeName.toLowerCase() === 'li') {
+                                    target.parentNode.classList.add('has-jax');
+                                }
+                            });
+                        }, '', false]
+                    }
+                }
+            };
+            (function () {
+                var script = document.createElement('script');
+                script.src = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js";
+                script.defer = true;
+                document.head.appendChild(script);
+            })();
+        } else {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+        }
+    </script>
+ 
+
+ 
+
+ 
+
+ 
+
+
+    
+
+    
+
+    
+    
+    <script>
+        function loadComment() {
+            let e;
+            (e = document.createElement("script")).src = 'https://cdn.jsdelivr.net/npm/valine@1.5.1/dist/Valine.min.js',
+            document.body.appendChild(e);
+            e.onload = () => {
+                var valineConfig = {"appId":"zRNIrSUI4znQzxYdD3Pj6sOn-gzGzoHsz","appKey":"vPmaxa5GBaQ1u5crbqb7CRXe","placeholder":"说点什么","path":null,"avatar":null,"meta":["nick","mail","link"],"pageSize":null,"lang":null,"visitor":null,"highlight":null,"avatarForce":null,"recordIP":null,"serverURLs":null,"enableQQ":null,"requiredFields":["nick","mail"],"emojiCDN":null,"emojiMaps":null};
+                valineConfig.el = '#valine_container';
+                for (var i in valineConfig) {
+                    if (valineConfig[i] === null) delete valineConfig[i];
+                }
+                new Valine(valineConfig);
+            };
+        }
+    
+        var runningOnBrowser = typeof window !== "undefined";
+        var isBot = runningOnBrowser && !("onscroll" in window) || typeof navigator !== "undefined" && /(gle|ing|ro|msn)bot|crawl|spider|yand|duckgo/i.test(navigator.userAgent);
+        var supportsIntersectionObserver = runningOnBrowser && "IntersectionObserver" in window;
+    
+        setTimeout(function () {
+            if (!isBot && supportsIntersectionObserver) {
+                var comment_observer = new IntersectionObserver(function(entries) {
+                    if (entries[0].isIntersecting) {
+                        loadComment();
+                        comment_observer.disconnect();
+                    }
+                }, { threshold: [0] });
+                comment_observer.observe(document.getElementById('comment'));
+            } else {
+                loadComment();
+            }
+        }, 1);
+    </script>
+
+
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+
+    
+    
+    
+
+
+
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML></script>
+</body>
+</html>
