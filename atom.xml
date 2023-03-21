@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2023-03-21T00:57:22.019Z</updated>
+  <updated>2023-03-21T03:30:11.018Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,37 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>多级反馈队列和比例份额调度</title>
+    <link href="http://example.com/2023/03/21/%E5%A4%9A%E7%BA%A7%E5%8F%8D%E9%A6%88%E9%98%9F%E5%88%97/"/>
+    <id>http://example.com/2023/03/21/%E5%A4%9A%E7%BA%A7%E5%8F%8D%E9%A6%88%E9%98%9F%E5%88%97/</id>
+    <published>2023-03-21T00:59:53.000Z</published>
+    <updated>2023-03-21T03:30:11.018Z</updated>
+    
+    <content type="html"><![CDATA[<h4 id="多级反馈队列">多级反馈队列</h4><p>​多级反馈队列 (MLFQ)需要解决两方面问题：优化周转时间、降低响应时间 ---- 在不知道工作要运行多久的情况下。</p><h5 id="基本规则">基本规则</h5><ol><li><p>MLFQ中有许多独立的队列，每个队列有不同优先级，MLFQ总是先执行高优先级工作。</p></li><li><p>如果相同队列里有许多工作，则采用轮转调度。</p><p>这将导致只要高优先级队列有工作，低优先级队列的工作就没机会运行</p></li><li><p>工作进入系统时，放在最高优先级（最上层队列）</p></li><li><p>工作用完整个时间片后，降低优先级 （无论是否放弃CPU）</p><p>这又会产生一些缺点：如果像第6条，系统有太多交互型工作，就一直占用CPU，导致长工作永远无法得到CPU</p></li><li><p>经过一段时间S，将所有工作重新加入最高优先级队列</p></li></ol><p>一般来讲，低优先级队列中更多的是CPU密集型工作，我们将配置更长的时间片。命令行工具nice可以允许用户给出优先级设置的建议。</p><hr><p>最后，总结一下MLFQ的真正规则：</p><p><strong>规则1</strong> 如果A的优先级 &gt; B的优先级，运行A（不运行B）</p><p><strong>规则 2</strong> 如果A的优先级 = B的优先级，轮转运行A和B</p><p><strong>规则3</strong> 工作进入系统时，放在最高优先级</p><p><strong>规则 4</strong> 一旦工作用完在某一层中的时间配额（无论中间主动放弃多少次CPU），就降低其优先级（移入低一级队列）</p><p><strong>规则 5</strong> 经过一段时间S，就将系统中所有工作重新加入最高优先级队列</p><hr><h4 id="调度-比例份额">调度: 比例份额</h4><h5 id="基本概念-彩票数表示份额">基本概念: 彩票数表示份额</h5><p>​用彩票数代表进程占有某个资源的份额，具体来讲，是某进程拥有的彩票数占全部彩票数的百分比。</p><p>​设进程A有75张彩票，B有25张，我们将100张彩票编号0-99，通过随机抽取一个数，运行那个数对应的彩票的进程</p><h5 id="彩票机制">彩票机制</h5><p>​<strong>彩票货币</strong>: 允许拥有一组彩票的用户以他们喜欢的某种货币，将彩票分给自己的不同工作，之后操作系统再将这种货币兑换为正确的全局彩票</p><p>​<strong>彩票转让</strong>: 一个进程可以临时将自己的彩票交给另一个进程。例如客户端暂时将彩票转让给服务端以加速服务端执行请求，服务端结束后再把这部分彩票归还给客户端</p><p>​<strong>彩票通胀</strong>: 一个进程临时提升或降低自己拥有的彩票数量。用于进程间相互信任的环境，否则会导致存在一个贪婪的进程给自己非常多的彩票进而接管整个机器。</p><h4 id="如何分配彩票？">如何分配彩票？</h4><p>​<strong>步长调度</strong> 为了确保公平，设ABC票数分别为100、50、250，将一个大数分别除以他们的票数得到每个进程的步长，比如用10000除以票数，ABC的步长分别为100、200、40。每次运行后，都让计数器增加它的步长。之后调度程序使用步长和行程确定调度哪个进程：当需要调度时，选择目前最小行程值的进程，运行后进程行程增加一个步长。这样不同步长的进程大致按照比例公平运行。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h4 id=&quot;多级反馈队列&quot;&gt;多级反馈队列&lt;/h4&gt;
+&lt;p&gt;​	多级反馈队列 (MLFQ)需要解决两方面问题：优化周转时间、降低响应时间 ---- 在不知道工作要运行多久的情况下。&lt;/p&gt;
+&lt;h5 id=&quot;基本规则&quot;&gt;基本规则&lt;/h5&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;MLFQ中有许</summary>
+      
+    
+    
+    
+    <category term="CS" scheme="http://example.com/categories/CS/"/>
+    
+    <category term="操作系统" scheme="http://example.com/categories/CS/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/"/>
+    
+    
+    <category term="操作系统" scheme="http://example.com/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/"/>
+    
+  </entry>
   
   <entry>
     <title>进程调度介绍</title>
