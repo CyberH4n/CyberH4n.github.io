@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2023-03-21T03:30:11.018Z</updated>
+  <updated>2023-03-23T02:48:38.108Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,38 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>地址转换</title>
+    <link href="http://example.com/2023/03/22/%E5%9C%B0%E5%9D%80%E8%BD%AC%E6%8D%A2/"/>
+    <id>http://example.com/2023/03/22/%E5%9C%B0%E5%9D%80%E8%BD%AC%E6%8D%A2/</id>
+    <published>2023-03-22T14:58:21.000Z</published>
+    <updated>2023-03-23T02:48:38.108Z</updated>
+    
+    <content type="html"><![CDATA[<h4 id="地址转换">地址转换</h4><p><strong>假设</strong></p><ol><li>用户的地址空间必须连续存放在物理内存中。</li><li>假设地址空间不是很大，小于物理内存的大小</li><li>假设每个地址空间大小完全一样</li></ol><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">func</span><span class="params">()</span>&#123;</span><br><span class="line">  <span class="type">int</span> x;</span><br><span class="line">  x = x + <span class="number">3</span>;</span><br><span class="line">...</span><br></pre></td></tr></table></figure><p>转化成汇编可能像这样</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">128: movl 0x0(%ebx), %eax</span><br><span class="line">132: addl $0x03, %eax</span><br><span class="line">135: movl %eax, 0x0(%ebx)</span><br></pre></td></tr></table></figure><p>x的地址位于ebx中，之后取值存入eax，然后eax内的值+3，再把eax的值存回ebx内地址指向的内存位置。</p><p>从程序的角度，它的地址空间是0kB到16kB，但考虑实际上的物理内存，进程真正占据的是32kB-48kB，在整个物理内存的64kB中，还有操作系统占用的0-16kB物理内存和未占用的部分，因此可见，从进程地址空间到物理内存发生了一种映射。</p><h5 id="动态重定位">动态重定位</h5><p>又称为基址加界限，每个CPU需要两个寄存器：基址寄存器和界限寄存器。在这种方式下，编写和编译程序时假设地址空间从0开始，但是执行的时候操作系统决定实际的物理内存地址，并将基址寄存器设置为这个值。</p><p>进程中使用的内存引用都是虚拟地址，硬件接下来将虚拟地址加上基址寄存器中的内容，得到物理地址，再发给内存系统。</p><p>例如前面，程序计数器为128，硬件获取此处指令，然后把它加上基址寄存器32kB得到32896，然后从这个物理地址获取指令。</p><p>由于重定位是运行时发生的，我们可以在进程开始运行后改变其地址空间。</p><p><strong>界限寄存器</strong> 提供访问保护，如果进程需要访问超出这个界限或负数地址，CPU触发异常，终止进程。</p><p>基址寄存器+界限寄存器是MMU（内存管理单元）的一部分。</p><p><strong>虚拟内存如何实现</strong></p><ol><li>进程创建时，操作系统寻找内存空间，物理内存的每个槽块标记为空闲或引用，操作系统在空闲列表中检索空闲位置，更改空闲列表状态</li><li>进程终止时，操作系统回收内存，并放回空闲列表中，清除相关的数据结构</li><li>上下文切换时，操作系统需要保存和恢复基址寄存器和界限寄存器，保存在进程结构或进程控制块中 (进程停止时，操作系统可以改变其地址空间的物理位置)</li><li>操作系统必须提供异常处理程序</li></ol>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h4 id=&quot;地址转换&quot;&gt;地址转换&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;假设&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;用户的地址空间必须连续存放在物理内存中。&lt;/li&gt;
+&lt;li&gt;假设地址空间不是很大，小于物理内存的大小&lt;/li&gt;
+&lt;li&gt;假设每个地址空间大小完全一样&lt;/li&gt;
+</summary>
+      
+    
+    
+    
+    <category term="CS" scheme="http://example.com/categories/CS/"/>
+    
+    <category term="操作系统" scheme="http://example.com/categories/CS/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/"/>
+    
+    
+    <category term="操作系统" scheme="http://example.com/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/"/>
+    
+  </entry>
   
   <entry>
     <title>多级反馈队列和比例份额调度</title>
