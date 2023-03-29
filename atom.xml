@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2023-03-25T15:47:53.950Z</updated>
+  <updated>2023-03-29T12:37:31.193Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,52 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>管理空闲空间的基本策略</title>
+    <link href="http://example.com/2023/03/29/%E7%AE%A1%E7%90%86%E7%A9%BA%E9%97%B2%E7%A9%BA%E9%97%B4%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%AD%96%E7%95%A5/"/>
+    <id>http://example.com/2023/03/29/%E7%AE%A1%E7%90%86%E7%A9%BA%E9%97%B2%E7%A9%BA%E9%97%B4%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%AD%96%E7%95%A5/</id>
+    <published>2023-03-29T12:18:03.000Z</published>
+    <updated>2023-03-29T12:37:31.193Z</updated>
+    
+    <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><h4 id="最优匹配">最优匹配</h4><p>首先遍历整个空闲列表，找到和请求大小一样或更大的空闲块，然后返回这组候选者中最小的一块。遍历查找需要付出较高的性能代价</p><h4 id="最差匹配">最差匹配</h4><p>尝试找最大的空闲块，可以保留较大的块，而不是像最优匹配那样可能剩下很多难以利用的小块。但是，最差匹配同样需要遍历整个空闲列表。但是大多数研究表明它的表现非常差。</p><h4 id="首次匹配">首次匹配</h4><p>找到第一个足够大的块，将请求的空间返回给用户。同样，剩余的空闲空间留给后续请求。首次匹配具有速度优势，但会让列表开头有许多小块</p><h4 id="下次匹配">下次匹配</h4><p>多维护一个指针，指向上一次查找结束的位置，从而避免对列表开头频繁分割。</p><h4 id="其他方式">其他方式</h4><p><strong>分离空闲列表</strong> 如果某个应用程序经常申请一种或几种大小的内存空间，那就用一个独立的列表，只管理这样大小的对象。在内核启动时，为可能频繁请求的内核对象创建一些对象缓存，如锁和inode。每个对象缓存分离了特定大小的空闲列表。某个缓存中空闲空间快耗尽时，就向通用内存分配程序申请一些内存厚块。如果给定厚块中对象引用计数为0，通用内存分配程序回收空间。</p><p><strong>伙伴系统</strong> 二分伙伴分配，当有一个内存分配请求时，空闲空间被递归地一分为二，直到刚好满足要求。被释放时，如果两部分都空闲，则可以很快直接合并</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;link rel=&quot;stylesheet&quot; class=&quot;aplayer-secondary-style-marker&quot; href=&quot;/assets/css/APlayer.min.css&quot;&gt;&lt;script src=&quot;/assets/js/APlayer.min.js&quot; cla</summary>
+      
+    
+    
+    
+    <category term="CS" scheme="http://example.com/categories/CS/"/>
+    
+    <category term="操作系统" scheme="http://example.com/categories/CS/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/"/>
+    
+    
+    <category term="操作系统" scheme="http://example.com/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>C程序设计语言习题精选</title>
+    <link href="http://example.com/2023/03/27/C%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E8%AF%AD%E8%A8%80%E4%B9%A0%E9%A2%98%E7%B2%BE%E9%80%89/"/>
+    <id>http://example.com/2023/03/27/C%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E8%AF%AD%E8%A8%80%E4%B9%A0%E9%A2%98%E7%B2%BE%E9%80%89/</id>
+    <published>2023-03-27T05:22:48.000Z</published>
+    <updated>2023-03-27T05:27:13.489Z</updated>
+    
+    <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><h4 id="第1章-导言">第1章 导言</h4><p>1-9 编写一个将输入复制到输出的程序，并将其中连续的多个空格用一个空格代替</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">int</span> c;</span><br><span class="line">    <span class="type">int</span> flag = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>((c = getchar()) != EOF)&#123;</span><br><span class="line">        <span class="keyword">if</span>(c == <span class="string">&#x27; &#x27;</span>)&#123;</span><br><span class="line">            <span class="keyword">if</span>(flag == <span class="number">0</span>)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="built_in">putchar</span>(c);</span><br><span class="line">                    flag = <span class="number">1</span>;</span><br><span class="line">                &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">            flag = <span class="number">0</span>;</span><br><span class="line">            <span class="built_in">putchar</span>(c);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>1-10 编写一个将输入复制到输出的程序，并将其中的制表符替换为<code>\t</code>，将回退符替换为<code>\b</code>，将反斜杠替换为<code>\\</code>。这样可以将制表符和回退符以可见的方式显示出来。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;link rel=&quot;stylesheet&quot; class=&quot;aplayer-secondary-style-marker&quot; href=&quot;/assets/css/APlayer.min.css&quot;&gt;&lt;script src=&quot;/assets/js/APlayer.min.js&quot; cla</summary>
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>分段</title>
